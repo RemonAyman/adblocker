@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "980666268841",
+    "project_id": "adblocker-fc34b",
+    "storage_bucket": "adblocker-fc34b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980666268841:android:5bd4dcffdc049896967db8",
+        "android_client_info": {
+          "package_name": "com.adshield"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL8YJhtdu48ZOix44B8tycxWbJhTiDRlQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
