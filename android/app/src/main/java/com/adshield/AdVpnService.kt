@@ -1,4 +1,4 @@
-package com.adshieldrn
+package com.adshield
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -18,8 +18,8 @@ class AdVpnService : VpnService() {
     private val CHANNEL_ID = "AdShield_Channel"
 
     companion object {
-        const val ACTION_START = "com.adshieldrn.START"
-        const val ACTION_STOP = "com.adshieldrn.STOP"
+        const val ACTION_START = "com.adshield.START"
+        const val ACTION_STOP = "com.adshield.STOP"
         private const val TAG = "AdVpnService"
     }
 

@@ -1,4 +1,4 @@
-package com.adshieldrn
+package com.adshield
 
 import android.app.Activity
 import android.content.Intent
@@ -30,19 +30,24 @@ class AdBlockerModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
     @ReactMethod
     fun startBlocker(promise: Promise) {
-        val currentActivity = currentActivity
-        if (currentActivity == null) {
+        val activity = reactApplicationContext.currentActivity
+        if (activity == null) {
             promise.reject("ACTIVITY_NULL", "Activity is null")
             return
         }
 
-        val intent = VpnService.prepare(currentActivity)
-        if (intent != null) {
-            currentActivity.startActivityForResult(intent, VPN_REQUEST_CODE)
-            promise.resolve(null)
-        } else {
-            onActivityResult(currentActivity, VPN_REQUEST_CODE, Activity.RESULT_OK, null)
-            promise.resolve(null)
+        try {
+            val intent = VpnService.prepare(activity)
+            if (intent != null) {
+                activity.startActivityForResult(intent, VPN_REQUEST_CODE)
+                promise.resolve(null)
+            } else {
+                // Already authorized, start immediately
+                startServiceInternal()
+                promise.resolve(null)
+            }
+        } catch (e: Exception) {
+            promise.reject("PREPARE_ERROR", e.message)
         }
     }
 
@@ -55,21 +60,37 @@ class AdBlockerModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
         context.startService(intent)
     }
 
-    override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
+    private fun startServiceInternal() {
+        val context = reactApplicationContext
+        val intent = Intent(context, AdVpnService::class.java).apply {
+            action = AdVpnService.ACTION_START
+        }
+        context.startService(intent)
+    }
+
+    // Signature must match ActivityEventListener exactly
+    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == VPN_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                val context = reactApplicationContext
-                val intent = Intent(context, AdVpnService::class.java).apply {
-                    action = AdVpnService.ACTION_START
-                }
-                context.startService(intent)
+                startServiceInternal()
             } else {
                 sendEvent("VpnPermissionDenied", true)
             }
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    // Signature must match ActivityEventListener exactly
+    override fun onNewIntent(intent: Intent) {
         // Not used
+    }
+
+    @ReactMethod
+    fun addListener(eventName: String) {
+        // Required for NativeEventEmitter
+    }
+
+    @ReactMethod
+    fun removeListeners(count: Int) {
+        // Required for NativeEventEmitter
     }
 }

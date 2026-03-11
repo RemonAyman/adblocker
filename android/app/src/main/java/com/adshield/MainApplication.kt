@@ -1,4 +1,4 @@
-package com.adshieldrn
+package com.adshield
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -7,7 +7,6 @@ import {
     StatusBar,
     NativeModules,
     NativeEventEmitter,
-    SafeAreaView,
     Animated,
     TextInput,
     Alert,
@@ -16,6 +15,7 @@ import {
     Platform,
     ScrollView,
 } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
@@ -264,10 +264,12 @@ const App = () => {
     );
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" />
-            {screen === 'DASHBOARD' ? renderDashboard() : renderAuth()}
-        </View>
+        <SafeAreaProvider>
+            <View style={styles.container}>
+                <StatusBar barStyle="light-content" />
+                {screen === 'DASHBOARD' ? renderDashboard() : renderAuth()}
+            </View>
+        </SafeAreaProvider>
     );
 };
 

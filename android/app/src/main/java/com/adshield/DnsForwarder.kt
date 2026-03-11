@@ -1,4 +1,4 @@
-package com.adshieldrn
+package com.adshield
 
 import android.net.VpnService
 import android.util.Log

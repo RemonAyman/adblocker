@@ -1,4 +1,4 @@
-package com.adshieldrn
+package com.adshield
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
