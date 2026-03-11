@@ -44,7 +44,7 @@ class AdVpnService : VpnService() {
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("AdShield is Active")
             .setContentText("Your device is protected from ads.")
-            .setSmallIcon(android.R.drawable.ic_lock_idle_lock) // Using system icon for now
+            .setSmallIcon(android.R.drawable.ic_lock_idle_lock)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
             .build()
@@ -59,24 +59,23 @@ class AdVpnService : VpnService() {
             val builder = Builder()
             builder.addAddress("10.8.0.2", 32)
             
-            // DNS-Only mode for maximum speed
+            // Porting high-speed DNS failover from Kotlin project
             builder.addDnsServer("94.140.14.14")
-            // Crucial: Only route traffic destined for the AdGuard DNS to the VPN
+            builder.addDnsServer("94.140.15.15")
+            
             builder.addRoute("94.140.14.14", 32)
+            builder.addRoute("94.140.15.15", 32)
 
             vpnInterface = builder.setSession("AdShield")
-                .setBlocking(true) // Blocking is required for the Forwarder thread to sleep efficiently
+                .setBlocking(true)
                 .establish()
 
-            // Start the custom Packet Forwarder thread to process DNS queries
             vpnInterface?.fileDescriptor?.let {
                 forwarderThread = Thread(DnsForwarder(this, it))
                 forwarderThread?.start()
             }
 
-            Log.i(TAG, "VPN Started in High-Speed Mode with custom Forwarder")
-            
-            // Inform RN UI that VPN is started
+            Log.i(TAG, "VPN Started in High-Speed Mode (AdShieldRN)")
             AdBlockerModule.sendEvent("VpnStateChanged", true)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to start VPN", e)
@@ -93,8 +92,6 @@ class AdVpnService : VpnService() {
             stopForeground(true)
             stopSelf()
             Log.i(TAG, "VPN Stopped")
-            
-            // Inform RN UI that VPN is stopped
             AdBlockerModule.sendEvent("VpnStateChanged", false)
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping VPN", e)
