@@ -1,97 +1,56 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# AdShield Mobile 🛡️
 
-# Getting Started
+**AdShield Mobile** هو تطبيق أندرويد متطور مصمم لحمايتك من الإعلانات المزعجة والحفاظ على خصوصيتك أثناء تصفح الإنترنت، مع نظام تسجيل دخول آمن وواجهة مستخدم عصرية.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 🚀 المميزات الرئيسية (Features)
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+*   **منع الإعلانات (Ad Blocking):** منع إعلانات جوجل، اليوتيوب، والـ Trackers المزعجة باستخدام تقنية الـ DNS.
+*   **سرعة فائقة (High Performance):** يعمل بنظام **DNS-Only Routing**، مما يعني أنه لا يؤثر على سرعة التحميل أو الألعاب، فقط طلبات الـ DNS هي التي يتم توجيهها.
+*   **ثبات الاتصال (Stay Connected):** يدعم الـ **Failover** بين سيرفرات AdGuard DNS (الأساسي والاحتياطي) لضمان عدم انقطاع الخدمة.
+*   **نظام بصمة مشفر (Security):**
+    *   تسجيل دخول (Login) وإنشاء حساب (Signup) مربوط بـ **Firebase**.
+    *   تشفير كلمات المرور بنظام **SHA-256** في قاعدة البيانات (Firestore).
+    *   التأكد من عدم تكرار اسم المستخدم أو الإيميل.
+*   **واجهة مستخدم Premium:** تصميم مظلم (Dark Mode) جذاب وسهل الاستخدام مع Micro-animations.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
-npm start
+## 🛠️ المتطلبات التقنية (Technical Setup)
 
-# OR using Yarn
-yarn start
-```
+للبدء في تطوير أو تشغيل التطبيق، تأكد من الآتي:
 
-## Step 2: Build and run your app
+1.  **Firebase Integration:**
+    *   قم بتحميل ملف `google-services.json` من لوحة تحكم الفايربيز وضعه في مسار `app/`.
+    *   تأكد من تفعيل (Email/Password) و (Google) و (Phone) في قسم Authentication.
+2.  **SHA-1 Release Fingerprint:**
+    *   لضمان عمل Google Sign-in و Phone Auth، يجب إضافة SHA-1 الخاص بجهازك في إعدادات المشروع على الفايربيز.
+3.  **Firestore Rules:**
+    *   استخدم القواعد الموجودة في ملف `firestore_rules.txt` لتأمين بيانات المستخدمين.
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+---
 
-### Android
+## 📁 هيكل المشروع (Project Structure)
 
-```sh
-# Using npm
-npm run android
+*   `LoginActivity.kt`: التعامل مع واجهة تسجيل الدخول.
+*   `SignupActivity.kt`: التعامل مع إنشاء حساب جديد والتحقق من البيانات.
+*   `AuthManager.kt`: المركز الرئيسي للتعامل مع Firebase Auth و Firestore.
+*   `AdVpnService.kt`: خدمة الـ VPN المسؤولة عن توجيه حركة المرور للـ DNS.
+*   `DnsForwarder.kt`: المحرك المسؤول عن إرسال واستقبال طلبات الـ DNS وفلترتها.
 
-# OR using Yarn
-yarn android
-```
+---
 
-### iOS
+## 🔒 الأمان والخصوصية (Security & Privacy)
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+التطبيق لا يقوم بتخزين أي بيانات تصفح خاصة بك. هو يعمل فقط كوسيط (Proxy) لتصفية طلبات الـ DNS ومنع عناوين الإعلانات المعروفة من التحميل. يتم تخزين بيانات الحساب (Username, Email) بشكل آمن في Firestore مع تشفير كلمة المرور.
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+---
 
-```sh
-bundle install
-```
+## 📝 ملاحظات للمطورين
 
-Then, and every time you update your native dependencies, run:
+عند إجراء تعديلات على خدمة الـ VPN، تأكد دائماً من استخدام `vpnService.protect(socket)` لتجنب حدوث **Routing Loop** الذي قد يؤدي لفصل الإنترنت.
 
-```sh
-bundle exec pod install
-```
+---
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+**AdShield - حمايتك هي أولويتنا.** 🛡️
